@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install 2>&1)",
+      "Bash(npm cache clean --force && npm install 2>&1)",
+      "Bash(npm install --cache /tmp/npm-cache 2>&1)",
+      "Bash(npx vite build 2>&1 | head -50)",
+      "Bash(cd /Users/ahhyeon/Desktop/develop/bible_native && npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output /tmp/bible_native_bundle.js --assets-dest /tmp/bible_native_assets 2>&1)",
+      "Bash(npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output /tmp/bible_native_bundle.js --assets-dest /tmp/bible_native_assets 2>&1 | tail -5)"
+    ]
+  }
+}
