@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Users/ahhyeon/Desktop/develop/bible_native -maxdepth 3 -type f -name \"*.md\" -o -name \".cursorrules\" -o -name \".cursor\" 2>/dev/null | grep -v node_modules)",
+      "Bash(tree -L 2 -I 'node_modules|Pods' /Users/ahhyeon/Desktop/develop/bible_native 2>/dev/null || find /Users/ahhyeon/Desktop/develop/bible_native -maxdepth 2 -not -path '*/node_modules/*' -not -path '*/.gradle/*' -not -path '*/Pods/*' -not -path '*/.expo/*' -type f -o -type d | head -50)",
+      "Bash(du -sh /Users/ahhyeon/Desktop/develop/bible_native 2>/dev/null && du -sh /Users/ahhyeon/Desktop/develop/bible_native/* 2>/dev/null | grep -v node_modules)"
+    ]
+  }
+}
