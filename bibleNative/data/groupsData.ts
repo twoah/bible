@@ -76,6 +76,20 @@ export const myGroups: GroupInfo[] = [
 
 export const findGroups: GroupInfo[] = [
   {
+    id: '1',
+    name: '새벽기도 성경읽기',
+    description: '매일 새벽 6시 함께 성경을 읽고 묵상을 나눕니다.',
+    members: 12,
+    category: '새벽기도',
+  },
+  {
+    id: '2',
+    name: '청년 성경통독',
+    description: '1년 1독 계획으로 청년들이 함께 읽습니다.',
+    members: 24,
+    category: '청년',
+  },
+  {
     id: '3',
     name: '주부 말씀나눔',
     description: '오전 시간을 활용한 주부들의 성경 읽기 모임',

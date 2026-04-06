@@ -77,69 +77,63 @@ export function ReadingPlan() {
           ? {
               ...group,
               tasks: group.tasks.map((task) =>
-                task.id === taskId ? { ...task, completed: !task.completed } : task,
+                task.id === taskId ? { ...task, completed: !task.completed } : task
               ),
             }
-          : group,
-      ),
+          : group
+      )
     );
   };
 
   const toggleGroup = (groupId: string) => {
     setExpandedGroups((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(groupId)) {
-        newSet.delete(groupId);
-      } else {
-        newSet.add(groupId);
-      }
+      newSet.has(groupId) ? newSet.delete(groupId) : newSet.add(groupId);
       return newSet;
     });
   };
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.titleRow}>
+      <View style={styles.pageHeader}>
         <Ionicons name="calendar-outline" size={22} color="#16A34A" />
-        <Text style={styles.title}>독서 계획</Text>
+        <Text style={styles.pageTitle}>독서 계획</Text>
       </View>
 
       {groupPlans.map((group) => {
-        const completedCount = group.tasks.filter((task) => task.completed).length;
-        const progressPercentage = (completedCount / group.tasks.length) * 100;
+        const completedCount = group.tasks.filter((t) => t.completed).length;
+        const progress = (completedCount / group.tasks.length) * 100;
         const isExpanded = expandedGroups.has(group.id);
 
         return (
           <View key={group.id} style={styles.card}>
-            <TouchableOpacity
-              style={styles.cardHeader}
-              onPress={() => toggleGroup(group.id)}
-              activeOpacity={0.7}
-            >
+            {/* 그룹 헤더 */}
+            <TouchableOpacity style={styles.groupHeader} onPress={() => toggleGroup(group.id)}>
               <View style={[styles.groupIcon, { backgroundColor: group.color }]}>
-                <Ionicons name="people-outline" size={18} color="#fff" />
+                <Ionicons name="people" size={18} color="#fff" />
               </View>
               <View style={styles.groupInfo}>
                 <Text style={styles.groupName}>{group.name}</Text>
                 <View style={styles.groupMeta}>
-                  <View style={styles.badge}>
-                    <Text style={styles.badgeText}>{group.members}명</Text>
+                  <View style={styles.memberBadge}>
+                    <Text style={styles.memberBadgeText}>{group.members}명</Text>
                   </View>
-                  <Text style={styles.progressText}>
+                  <Text style={styles.progressLabel}>
                     {completedCount} / {group.tasks.length} 완료
                   </Text>
                 </View>
               </View>
-              <Text style={styles.progressPercent}>{Math.round(progressPercentage)}%</Text>
+              <Text style={[styles.progressPct, { color: '#9333EA' }]}>
+                {Math.round(progress)}%
+              </Text>
             </TouchableOpacity>
 
-            {/* Progress bar */}
+            {/* 프로그레스 바 */}
             <View style={styles.progressBarBg}>
-              <View
-                style={[styles.progressBarFill, { width: `${progressPercentage}%` as any, backgroundColor: group.color }]}
-              />
+              <View style={[styles.progressBarFill, { width: `${progress}%` }]} />
             </View>
 
+            {/* 태스크 목록 */}
             {isExpanded && (
               <View style={styles.taskList}>
                 {group.tasks.map((task) => (
@@ -147,27 +141,19 @@ export function ReadingPlan() {
                     key={task.id}
                     style={styles.taskRow}
                     onPress={() => toggleTask(group.id, task.id)}
-                    activeOpacity={0.7}
                   >
-                    <TouchableOpacity
-                      style={[styles.checkbox, task.completed && styles.checkboxChecked]}
-                      onPress={() => toggleTask(group.id, task.id)}
-                    >
-                      {task.completed && (
-                        <Ionicons name="checkmark" size={12} color="#fff" />
-                      )}
-                    </TouchableOpacity>
-                    <View style={styles.taskInfo}>
-                      <Text style={[styles.taskText, task.completed && styles.taskTextCompleted]}>
-                        <Text style={styles.dayText}>Day {task.day}</Text>
-                        {'  •  '}
-                        {task.book} {task.chapter}장
-                      </Text>
+                    <View style={[styles.checkbox, task.completed && styles.checkboxDone]}>
+                      {task.completed && <Ionicons name="checkmark" size={12} color="#fff" />}
                     </View>
+                    <Text style={[styles.taskLabel, task.completed && styles.taskLabelDone]}>
+                      <Text style={styles.taskDay}>Day {task.day}</Text>
+                      {'  '}
+                      {task.book} {task.chapter}장
+                    </Text>
                     {task.completed ? (
-                      <Ionicons name="checkmark-circle" size={20} color="#16A34A" />
+                      <Ionicons name="checkmark-circle" size={18} color="#16A34A" />
                     ) : (
-                      <Ionicons name="ellipse-outline" size={20} color="#D1D5DB" />
+                      <Ionicons name="ellipse-outline" size={18} color="#D1D5DB" />
                     )}
                   </TouchableOpacity>
                 ))}
@@ -176,38 +162,16 @@ export function ReadingPlan() {
           </View>
         );
       })}
-      <View style={{ height: 20 }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#111827',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-    overflow: 'hidden',
-  },
-  cardHeader: {
+  container: { flex: 1 },
+  pageHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
+  pageTitle: { fontSize: 18, fontWeight: '700' },
+  card: { backgroundColor: '#fff', borderRadius: 12, overflow: 'hidden', marginBottom: 12 },
+  groupHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
@@ -220,92 +184,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  groupInfo: {
-    flex: 1,
-  },
-  groupName: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#111827',
-  },
-  groupMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 4,
-  },
-  badge: {
-    backgroundColor: '#F3F4F6',
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  badgeText: {
-    fontSize: 12,
-    color: '#374151',
-  },
-  progressText: {
-    fontSize: 13,
-    color: '#6B7280',
-  },
-  progressPercent: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#9333EA',
-  },
-  progressBarBg: {
-    height: 6,
-    backgroundColor: '#F3F4F6',
-    marginHorizontal: 16,
-    marginBottom: 4,
-    borderRadius: 3,
-  },
-  progressBarFill: {
-    height: 6,
-    borderRadius: 3,
-  },
-  taskList: {
-    borderTopWidth: 1,
-    borderTopColor: '#F3F4F6',
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 8,
-    gap: 4,
-  },
+  groupInfo: { flex: 1 },
+  groupName: { fontWeight: '600', fontSize: 15, marginBottom: 4 },
+  groupMeta: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  memberBadge: { backgroundColor: '#F3F4F6', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 2 },
+  memberBadgeText: { fontSize: 11, color: '#374151' },
+  progressLabel: { fontSize: 13, color: '#6B7280' },
+  progressPct: { fontSize: 18, fontWeight: '700' },
+  progressBarBg: { height: 6, backgroundColor: '#F3F4F6', marginHorizontal: 16, borderRadius: 3, marginBottom: 4 },
+  progressBarFill: { height: 6, backgroundColor: '#9333EA', borderRadius: 3 },
+  taskList: { borderTopWidth: 1, borderTopColor: '#F3F4F6', paddingHorizontal: 16, paddingVertical: 12, gap: 4 },
   taskRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
     paddingVertical: 8,
-    paddingHorizontal: 8,
     borderRadius: 8,
   },
   checkbox: {
-    width: 20,
-    height: 20,
+    width: 18,
+    height: 18,
     borderRadius: 4,
     borderWidth: 2,
     borderColor: '#D1D5DB',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkboxChecked: {
-    backgroundColor: '#9333EA',
-    borderColor: '#9333EA',
-  },
-  taskInfo: {
-    flex: 1,
-  },
-  taskText: {
-    fontSize: 14,
-    color: '#111827',
-  },
-  taskTextCompleted: {
-    color: '#9CA3AF',
-    textDecorationLine: 'line-through',
-  },
-  dayText: {
-    color: '#6B7280',
-    fontSize: 13,
-  },
+  checkboxDone: { backgroundColor: '#9333EA', borderColor: '#9333EA' },
+  taskLabel: { flex: 1, fontSize: 14, color: '#111827' },
+  taskLabelDone: { textDecorationLine: 'line-through', color: '#9CA3AF' },
+  taskDay: { color: '#6B7280', fontSize: 13 },
 });

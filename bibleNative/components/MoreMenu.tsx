@@ -46,7 +46,7 @@ export function MoreMenu({ onNavigateToNotes, onNavigateToProfile }: MoreMenuPro
     {
       id: 'share',
       label: '공유하기',
-      icon: 'share-outline' as const,
+      icon: 'share-social-outline' as const,
       description: '친구 초대 및 앱 공유',
       onPress: undefined,
     },
@@ -62,10 +62,10 @@ export function MoreMenu({ onNavigateToNotes, onNavigateToProfile }: MoreMenuPro
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.card}>
-        {/* 프로필 헤더 */}
-        <View style={styles.profileHeader}>
+        {/* 프로필 요약 */}
+        <View style={styles.profileRow}>
           <View style={styles.avatar}>
-            <Ionicons name="person-outline" size={32} color="#fff" />
+            <Ionicons name="person" size={32} color="#fff" />
           </View>
           <View>
             <Text style={styles.userName}>사용자님</Text>
@@ -74,66 +74,37 @@ export function MoreMenu({ onNavigateToNotes, onNavigateToProfile }: MoreMenuPro
         </View>
 
         {/* 메뉴 목록 */}
-        <View style={styles.menuList}>
-          {menuItems.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={[styles.menuRow, !item.onPress && styles.menuRowDisabled]}
-              onPress={item.onPress}
-              disabled={!item.onPress}
-              activeOpacity={item.onPress ? 0.7 : 1}
-            >
-              <View style={styles.menuIcon}>
-                <Ionicons name={item.icon} size={20} color="#9333EA" />
-              </View>
-              <View style={styles.menuInfo}>
-                <Text style={[styles.menuLabel, !item.onPress && styles.menuLabelDisabled]}>
-                  {item.label}
-                </Text>
-                <Text style={styles.menuDesc}>{item.description}</Text>
-              </View>
-              <Ionicons
-                name="chevron-forward"
-                size={16}
-                color={item.onPress ? '#9CA3AF' : '#D1D5DB'}
-              />
-            </TouchableOpacity>
-          ))}
-        </View>
+        {menuItems.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            style={[styles.menuRow, !item.onPress && styles.menuRowDisabled]}
+            onPress={item.onPress}
+            disabled={!item.onPress}
+          >
+            <View style={styles.menuIconWrap}>
+              <Ionicons name={item.icon} size={20} color="#9333EA" />
+            </View>
+            <View style={styles.menuInfo}>
+              <Text style={styles.menuLabel}>{item.label}</Text>
+              <Text style={styles.menuDesc}>{item.description}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color="#D1D5DB" />
+          </TouchableOpacity>
+        ))}
       </View>
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>버전 1.0.0</Text>
         <Text style={styles.footerText}>© 2025 함께 읽는 성경</Text>
       </View>
-      <View style={{ height: 20 }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  profileHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-    marginBottom: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-  },
+  container: { flex: 1 },
+  card: { backgroundColor: '#fff', borderRadius: 12, padding: 20, marginBottom: 12 },
+  profileRow: { flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 24 },
   avatar: {
     width: 64,
     height: 64,
@@ -142,30 +113,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  userName: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#111827',
-  },
-  userSub: {
-    fontSize: 13,
-    color: '#6B7280',
-    marginTop: 2,
-  },
-  menuList: {
-    gap: 4,
-  },
+  userName: { fontSize: 18, fontWeight: '700', color: '#111827' },
+  userSub: { fontSize: 13, color: '#6B7280', marginTop: 2 },
   menuRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    padding: 12,
+    gap: 14,
+    paddingVertical: 14,
     borderRadius: 10,
   },
-  menuRowDisabled: {
-    opacity: 0.5,
-  },
-  menuIcon: {
+  menuRowDisabled: { opacity: 0.5 },
+  menuIconWrap: {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -173,29 +131,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  menuInfo: {
-    flex: 1,
-  },
-  menuLabel: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#111827',
-  },
-  menuLabelDisabled: {
-    color: '#6B7280',
-  },
-  menuDesc: {
-    fontSize: 12,
-    color: '#9CA3AF',
-    marginTop: 2,
-  },
-  footer: {
-    alignItems: 'center',
-    paddingVertical: 16,
-    gap: 4,
-  },
-  footerText: {
-    fontSize: 13,
-    color: '#9CA3AF',
-  },
+  menuInfo: { flex: 1 },
+  menuLabel: { fontSize: 15, fontWeight: '600', color: '#111827' },
+  menuDesc: { fontSize: 12, color: '#6B7280', marginTop: 2 },
+  footer: { alignItems: 'center', paddingVertical: 16, gap: 4 },
+  footerText: { fontSize: 13, color: '#9CA3AF' },
 });

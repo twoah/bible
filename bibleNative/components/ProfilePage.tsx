@@ -24,10 +24,10 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
   };
 
   const achievements = [
-    { id: 1, title: '7일 연속 독서', icon: 'calendar-outline' as const, color: '#3B82F6', earned: true },
-    { id: 2, title: '첫 그룹 참여', icon: 'people-outline' as const, color: '#9333EA', earned: true },
-    { id: 3, title: '50개 장 완독', icon: 'book-outline' as const, color: '#16A34A', earned: false },
-    { id: 4, title: '10개 메모 작성', icon: 'document-text-outline' as const, color: '#CA8A04', earned: true },
+    { id: 1, title: '7일 연속 독서', icon: 'calendar' as const, color: '#3B82F6', earned: true },
+    { id: 2, title: '첫 그룹 참여', icon: 'people' as const, color: '#9333EA', earned: true },
+    { id: 3, title: '50개 장 완독', icon: 'book' as const, color: '#16A34A', earned: false },
+    { id: 4, title: '10개 메모 작성', icon: 'document-text' as const, color: '#CA8A04', earned: true },
   ];
 
   const readingHistory = [
@@ -36,34 +36,41 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
     { date: '2025-12-29', chapters: 3, books: ['창세기 1장', '창세기 2장', '요한복음 1장'] },
   ];
 
-  const weeklyPercent = (stats.weeklyProgress / stats.weeklyGoal) * 100;
+  const weeklyPct = Math.round((stats.weeklyProgress / stats.weeklyGoal) * 100);
+
+  const statCards = [
+    { label: '총 읽은 장', value: stats.totalChaptersRead, icon: 'book-outline' as const, color: '#3B82F6', bg: '#EFF6FF' },
+    { label: '참여 그룹', value: stats.groupsJoined, icon: 'people-outline' as const, color: '#9333EA', bg: '#F5F3FF' },
+    { label: '작성 메모', value: stats.notesCreated, icon: 'document-text-outline' as const, color: '#CA8A04', bg: '#FEFCE8' },
+    { label: '하이라이트', value: stats.highlightedVerses, icon: 'color-wand-outline' as const, color: '#16A34A', bg: '#F0FDF4' },
+  ];
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* 헤더 */}
-      <View style={styles.headerRow}>
-        <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={20} color="#374151" />
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backBtn} onPress={onBack}>
+          <Ionicons name="arrow-back" size={20} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>프로필</Text>
       </View>
 
       {/* 프로필 카드 */}
       <View style={styles.card}>
-        <View style={styles.profileHeader}>
+        <View style={styles.profileRow}>
           <View style={styles.avatar}>
             <Text style={styles.avatarEmoji}>👤</Text>
           </View>
           <View style={styles.profileInfo}>
             <Text style={styles.userName}>사용자님</Text>
             <Text style={styles.userSub}>함께 읽는 성경</Text>
-            <View style={styles.statBadges}>
+            <View style={styles.badgeRow}>
               <View style={styles.badge}>
-                <Ionicons name="calendar-outline" size={12} color="#374151" />
+                <Ionicons name="calendar-outline" size={11} color="#374151" />
                 <Text style={styles.badgeText}>{stats.consecutiveDays}일 연속</Text>
               </View>
               <View style={styles.badge}>
-                <Ionicons name="book-outline" size={12} color="#374151" />
+                <Ionicons name="book-outline" size={11} color="#374151" />
                 <Text style={styles.badgeText}>{stats.totalChaptersRead}장 완독</Text>
               </View>
             </View>
@@ -71,74 +78,57 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
         </View>
 
         {/* 주간 목표 */}
-        <View style={styles.weeklyGoal}>
-          <View style={styles.weeklyHeader}>
-            <View style={styles.weeklyTitleRow}>
-              <Ionicons name="trending-up" size={18} color="#9333EA" />
-              <Text style={styles.weeklyTitle}>주간 독서 목표</Text>
-            </View>
-            <Text style={styles.weeklyCount}>
+        <View style={styles.goalBox}>
+          <View style={styles.goalHeader}>
+            <Ionicons name="trending-up" size={18} color="#9333EA" />
+            <Text style={styles.goalTitle}>주간 독서 목표</Text>
+            <Text style={styles.goalProgress}>
               {stats.weeklyProgress} / {stats.weeklyGoal} 장
             </Text>
           </View>
-          <View style={styles.progressBarBg}>
-            <View style={[styles.progressBarFill, { width: `${weeklyPercent}%` as any }]} />
+          <View style={styles.progressBg}>
+            <View style={[styles.progressFill, { width: `${weeklyPct}%` }]} />
           </View>
         </View>
       </View>
 
-      {/* 통계 카드 */}
+      {/* 통계 */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>독서 통계</Text>
+        <Text style={styles.sectionTitle}>독서 통계</Text>
         <View style={styles.statsGrid}>
-          <View style={[styles.statItem, { backgroundColor: '#EFF6FF' }]}>
-            <Ionicons name="book-outline" size={20} color="#2563EB" />
-            <Text style={styles.statLabel}>총 읽은 장</Text>
-            <Text style={[styles.statValue, { color: '#2563EB' }]}>{stats.totalChaptersRead}</Text>
-          </View>
-          <View style={[styles.statItem, { backgroundColor: '#FAF5FF' }]}>
-            <Ionicons name="people-outline" size={20} color="#9333EA" />
-            <Text style={styles.statLabel}>참여 그룹</Text>
-            <Text style={[styles.statValue, { color: '#9333EA' }]}>{stats.groupsJoined}</Text>
-          </View>
-          <View style={[styles.statItem, { backgroundColor: '#FEFCE8' }]}>
-            <Ionicons name="document-text-outline" size={20} color="#CA8A04" />
-            <Text style={styles.statLabel}>작성 메모</Text>
-            <Text style={[styles.statValue, { color: '#CA8A04' }]}>{stats.notesCreated}</Text>
-          </View>
-          <View style={[styles.statItem, { backgroundColor: '#F0FDF4' }]}>
-            <Ionicons name="color-wand-outline" size={20} color="#16A34A" />
-            <Text style={styles.statLabel}>하이라이트</Text>
-            <Text style={[styles.statValue, { color: '#16A34A' }]}>{stats.highlightedVerses}</Text>
-          </View>
+          {statCards.map((s) => (
+            <View key={s.label} style={[styles.statCard, { backgroundColor: s.bg }]}>
+              <View style={styles.statHeader}>
+                <Ionicons name={s.icon} size={18} color={s.color} />
+                <Text style={styles.statLabel}>{s.label}</Text>
+              </View>
+              <Text style={[styles.statValue, { color: s.color }]}>{s.value}</Text>
+            </View>
+          ))}
         </View>
       </View>
 
       {/* 업적 */}
       <View style={styles.card}>
-        <View style={styles.achievementHeader}>
+        <View style={styles.sectionRow}>
           <Ionicons name="trophy-outline" size={18} color="#EA580C" />
-          <Text style={styles.cardTitle}>업적</Text>
+          <Text style={styles.sectionTitle}>업적</Text>
         </View>
         <View style={styles.achievementGrid}>
-          {achievements.map((achievement) => (
+          {achievements.map((a) => (
             <View
-              key={achievement.id}
+              key={a.id}
               style={[
-                styles.achievementItem,
-                achievement.earned ? styles.achievementItemEarned : styles.achievementItemUnearned,
+                styles.achievementCard,
+                a.earned ? styles.achievementEarned : styles.achievementLocked,
               ]}
             >
-              <View
-                style={[
-                  styles.achievementIcon,
-                  { backgroundColor: achievement.color },
-                  !achievement.earned && styles.achievementIconUnearned,
-                ]}
-              >
-                <Ionicons name={achievement.icon} size={22} color="#fff" />
+              <View style={[styles.achievementIcon, { backgroundColor: a.color, opacity: a.earned ? 1 : 0.4 }]}>
+                <Ionicons name={a.icon} size={22} color="#fff" />
               </View>
-              <Text style={styles.achievementTitle}>{achievement.title}</Text>
+              <Text style={[styles.achievementTitle, !a.earned && styles.achievementTitleLocked]}>
+                {a.title}
+              </Text>
             </View>
           ))}
         </View>
@@ -146,248 +136,80 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
 
       {/* 최근 독서 기록 */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>최근 독서 기록</Text>
-        {readingHistory.map((record, index) => {
-          const date = new Date(record.date);
+        <Text style={styles.sectionTitle}>최근 독서 기록</Text>
+        {readingHistory.map((record, idx) => {
+          const d = new Date(record.date);
           return (
-            <View
-              key={index}
-              style={[styles.historyRow, index < readingHistory.length - 1 && styles.historyRowBorder]}
-            >
+            <View key={idx} style={[styles.historyRow, idx < readingHistory.length - 1 && styles.historyBorder]}>
               <View style={styles.historyDate}>
-                <Text style={styles.historyMonth}>{date.getMonth() + 1}월</Text>
-                <Text style={styles.historyDay}>{date.getDate()}</Text>
+                <Text style={styles.historyMonth}>{d.getMonth() + 1}월</Text>
+                <Text style={styles.historyDay}>{d.getDate()}</Text>
               </View>
-              <View style={styles.historyContent}>
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>{record.chapters}개 장</Text>
+              <View style={styles.historyInfo}>
+                <View style={styles.chapterBadge}>
+                  <Text style={styles.chapterBadgeText}>{record.chapters}개 장</Text>
                 </View>
-                {record.books.map((book, bookIndex) => (
-                  <Text key={bookIndex} style={styles.historyBook}>
-                    • {book}
-                  </Text>
+                {record.books.map((b, bi) => (
+                  <Text key={bi} style={styles.historyBook}>• {b}</Text>
                 ))}
               </View>
             </View>
           );
         })}
       </View>
-      <View style={{ height: 20 }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 16,
-  },
-  backBtn: {
-    padding: 8,
-    borderRadius: 20,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#111827',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 12,
-  },
-  profileHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-    marginBottom: 16,
-  },
+  container: { flex: 1 },
+  header: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 16 },
+  backBtn: { padding: 8, borderRadius: 20, backgroundColor: '#F3F4F6' },
+  headerTitle: { fontSize: 18, fontWeight: '700' },
+  card: { backgroundColor: '#fff', borderRadius: 12, padding: 20, marginBottom: 12 },
+  profileRow: { flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 16 },
   avatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     backgroundColor: '#E9D5FF',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarEmoji: {
-    fontSize: 32,
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  userSub: {
-    fontSize: 13,
-    color: '#6B7280',
-    marginTop: 2,
-  },
-  statBadges: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 8,
-  },
-  badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  badgeText: {
-    fontSize: 12,
-    color: '#374151',
-  },
-  weeklyGoal: {
-    backgroundColor: '#FAF5FF',
-    borderRadius: 10,
-    padding: 12,
-  },
-  weeklyHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  weeklyTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  weeklyTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111827',
-  },
-  weeklyCount: {
-    fontSize: 13,
-    color: '#9333EA',
-  },
-  progressBarBg: {
-    height: 10,
-    backgroundColor: '#E9D5FF',
-    borderRadius: 5,
-  },
-  progressBarFill: {
-    height: 10,
-    backgroundColor: '#9333EA',
-    borderRadius: 5,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  statItem: {
-    flex: 1,
-    minWidth: '45%',
-    borderRadius: 10,
-    padding: 12,
-    gap: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginTop: 4,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: '700',
-  },
-  achievementHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 12,
-  },
-  achievementGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  achievementItem: {
-    flex: 1,
-    minWidth: '45%',
-    borderRadius: 10,
-    padding: 12,
-    borderWidth: 2,
-    gap: 8,
-  },
-  achievementItemEarned: {
-    borderColor: '#FCA5A5',
-    backgroundColor: '#FFF7ED',
-  },
-  achievementItemUnearned: {
-    borderColor: '#E5E7EB',
-    backgroundColor: '#F9FAFB',
-    opacity: 0.6,
-  },
-  achievementIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  achievementIconUnearned: {
-    opacity: 0.4,
-  },
-  achievementTitle: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#111827',
-  },
-  historyRow: {
-    flexDirection: 'row',
-    gap: 16,
-    paddingVertical: 12,
-  },
-  historyRowBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-  },
-  historyDate: {
-    alignItems: 'center',
-    minWidth: 32,
-  },
-  historyMonth: {
-    fontSize: 12,
-    color: '#6B7280',
-  },
-  historyDay: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#111827',
-  },
-  historyContent: {
-    flex: 1,
-    gap: 4,
-  },
-  historyBook: {
-    fontSize: 13,
-    color: '#6B7280',
-  },
+  avatarEmoji: { fontSize: 36 },
+  profileInfo: { flex: 1 },
+  userName: { fontSize: 20, fontWeight: '700', color: '#111827' },
+  userSub: { fontSize: 13, color: '#6B7280', marginTop: 2, marginBottom: 8 },
+  badgeRow: { flexDirection: 'row', gap: 8 },
+  badge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#F3F4F6', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 4 },
+  badgeText: { fontSize: 11, color: '#374151' },
+  goalBox: { backgroundColor: '#F5F3FF', borderRadius: 10, padding: 14 },
+  goalHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 },
+  goalTitle: { flex: 1, fontWeight: '600', color: '#111827' },
+  goalProgress: { fontSize: 13, color: '#9333EA', fontWeight: '600' },
+  progressBg: { height: 10, backgroundColor: '#DDD6FE', borderRadius: 5 },
+  progressFill: { height: 10, backgroundColor: '#9333EA', borderRadius: 5 },
+  sectionTitle: { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 12 },
+  sectionRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 },
+  statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  statCard: { width: '47%', borderRadius: 10, padding: 14 },
+  statHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 },
+  statLabel: { fontSize: 12, color: '#4B5563' },
+  statValue: { fontSize: 26, fontWeight: '700' },
+  achievementGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  achievementCard: { width: '47%', borderRadius: 10, borderWidth: 2, padding: 14 },
+  achievementEarned: { borderColor: '#FED7AA', backgroundColor: '#FFF7ED' },
+  achievementLocked: { borderColor: '#E5E7EB', backgroundColor: '#F9FAFB' },
+  achievementIcon: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  achievementTitle: { fontSize: 13, fontWeight: '500', color: '#111827' },
+  achievementTitleLocked: { color: '#9CA3AF' },
+  historyRow: { flexDirection: 'row', gap: 16, paddingVertical: 14 },
+  historyBorder: { borderBottomWidth: 1, borderBottomColor: '#F3F4F6' },
+  historyDate: { alignItems: 'center', minWidth: 36 },
+  historyMonth: { fontSize: 12, color: '#6B7280' },
+  historyDay: { fontSize: 24, fontWeight: '700', color: '#111827' },
+  historyInfo: { flex: 1 },
+  chapterBadge: { backgroundColor: '#F3F4F6', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, alignSelf: 'flex-start', marginBottom: 6 },
+  chapterBadgeText: { fontSize: 11, color: '#374151', fontWeight: '500' },
+  historyBook: { fontSize: 13, color: '#4B5563', lineHeight: 20 },
 });

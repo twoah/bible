@@ -224,27 +224,28 @@ export function BibleReader({
               </View>
             </View>
 
-            {/* 절 목록 — 좌우 슬라이드로 장 이동 */}
+            {/* 절 목록 — 절 번호 인라인 + 좌우 슬라이드로 장 이동 */}
             <GestureDetector gesture={swipeGesture}>
               <Animated.View style={[styles.verseList, swipeStyle]}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                  {currentChapterData.verses.map((verse) => {
-                    const verseKey = `${selectedBook}-${currentChapterData.chapter}-${verse.verse}`;
-                    const isHighlighted = highlightedVerses.has(verseKey);
-                    return (
-                      <TouchableOpacity
-                        key={verse.verse}
-                        style={[styles.verseRow, isHighlighted && styles.verseRowHighlighted]}
-                        onPress={() =>
-                          onVerseClick?.(selectedBook, currentChapterData.chapter, verse.verse)
-                        }
-                        activeOpacity={0.7}
-                      >
-                        <Text style={styles.verseNumber}>{verse.verse}</Text>
-                        <Text style={styles.verseText}>{verse.text}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
+                  <Text style={styles.verseParagraph}>
+                    {currentChapterData.verses.map((verse) => {
+                      const verseKey = `${selectedBook}-${currentChapterData.chapter}-${verse.verse}`;
+                      const isHighlighted = highlightedVerses.has(verseKey);
+                      return (
+                        <Text
+                          key={verse.verse}
+                          style={isHighlighted ? styles.verseSpanHighlighted : undefined}
+                          onPress={() =>
+                            onVerseClick?.(selectedBook, currentChapterData.chapter, verse.verse)
+                          }
+                        >
+                          <Text style={styles.verseNumber}>{verse.verse} </Text>
+                          {verse.text + ' '}
+                        </Text>
+                      );
+                    })}
+                  </Text>
                   <View style={{ height: highlightedVerses.size > 0 ? 80 : 20 }} />
                 </ScrollView>
               </Animated.View>
@@ -422,27 +423,20 @@ const styles = StyleSheet.create({
   verseList: {
     flex: 1,
   },
-  verseRow: {
-    flexDirection: 'row',
+  verseParagraph: {
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 8,
-  },
-  verseRowHighlighted: {
-    backgroundColor: '#FEF9C3',
-  },
-  verseNumber: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#2563EB',
-    marginRight: 8,
-    minWidth: 20,
-  },
-  verseText: {
-    flex: 1,
     fontSize: 14,
     lineHeight: 22,
     color: '#111827',
+  },
+  verseSpanHighlighted: {
+    backgroundColor: '#FEF9C3',
+  },
+  verseNumber: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#2563EB',
   },
   shareBar: {
     position: 'absolute',

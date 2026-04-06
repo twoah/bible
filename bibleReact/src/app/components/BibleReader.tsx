@@ -237,25 +237,24 @@ export function BibleReader({
               </div>
             </div>
 
-            {/* 절 목록 */}
-            <div className="space-y-1">
+            {/* 절 목록 - 줄바꿈 없이 이어서 표시 */}
+            <div className="px-3 py-2 text-sm leading-relaxed">
               {currentChapterData.verses.map((verse) => {
                 const verseKey = `${selectedBook}-${currentChapterData.chapter}-${verse.verse}`;
                 const isHighlighted = highlightedVerses.has(verseKey);
 
                 return (
-                  <div
+                  <span
                     key={verse.verse}
-                    className={`px-3 py-2 rounded-lg cursor-pointer transition-colors ${
-                      isHighlighted ? 'bg-yellow-100' : 'hover:bg-gray-50'
+                    className={`cursor-pointer rounded transition-colors ${
+                      isHighlighted ? 'bg-yellow-100' : 'hover:bg-gray-100'
                     }`}
                     onClick={() =>
                       onVerseClick?.(selectedBook, currentChapterData.chapter, verse.verse)
                     }
                   >
-                    <span className="mr-2 text-blue-600 font-semibold text-sm">{verse.verse}</span>
-                    <span className="text-sm leading-relaxed">{verse.text}</span>
-                  </div>
+                    <span className="text-blue-600 font-semibold text-xs mr-0.5">{verse.verse}</span>{verse.text}{' '}
+                  </span>
                 );
               })}
             </div>
