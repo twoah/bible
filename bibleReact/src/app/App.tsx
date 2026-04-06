@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BookOpen, CalendarCheck, Users, Menu } from 'lucide-react';
 import { BibleReader } from './components/BibleReader';
 import { ReadingPlan } from './components/ReadingPlan';
@@ -12,6 +12,15 @@ type TabType = 'read' | 'plan' | 'group' | 'more' | 'notes' | 'profile';
 export default function App() {
   const [highlightedVerses, setHighlightedVerses] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<TabType>('read');
+  const [isAtTop, setIsAtTop] = useState(true);
+
+  useEffect(() => {
+    const container = document.getElementById('scroll-container');
+    if (!container) return;
+    const handleScroll = () => setIsAtTop(container.scrollTop === 0);
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleVerseClick = (book: string, chapter: number, verse: number) => {
     const verseKey = `${book}-${chapter}-${verse}`;
@@ -35,7 +44,7 @@ export default function App() {
 
   return (
     <div className="h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
-      <div className="flex-1 overflow-auto pb-20">
+      <div id="scroll-container" className="flex-1 overflow-auto pb-20">
         <div className="container mx-auto px-4 py-4 max-w-7xl h-full">
           <div className="h-full">
             {activeTab === 'read' && (
@@ -43,6 +52,8 @@ export default function App() {
                 <BibleReader
                   onVerseClick={handleVerseClick}
                   highlightedVerses={highlightedVerses}
+                  onClearHighlights={() => setHighlightedVerses(new Set())}
+                  isAtTop={isAtTop}
                 />
               </div>
             )}
@@ -79,7 +90,7 @@ export default function App() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+      <div className={`fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg transition-transform duration-300 ${isAtTop ? 'translate-y-0' : 'translate-y-full'}`}>
         <div className="container mx-auto px-4 max-w-7xl">
           <nav className="flex items-center justify-around">
             {menuItems.map((item) => {
